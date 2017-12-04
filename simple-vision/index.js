@@ -15,20 +15,23 @@ exports.processFile = function(event, callback) {
   const vision = Vision();
   const storage = Storage();
 
-  var options = {
-    verbose: true
+  const request = {
+    source: {
+      imageUri: `gs://${file.bucket}/${file.name}`
+    }
   };
 
-  vision.detectLabels(storage.bucket(file.bucket).file(file.name), options, function(err, labels, apiResponse) {
-
-    if (err) {
-      console.log('Cloud Vision Error: ' + err);
-    } else {
-      // Log the JSON output of the Vision API
-      console.log("Detect labels response: " + JSON.stringify(labels));
-    }
-  });
-    
+  // Performs label detection on the gcs file
+  vision.labelDetection(request)
+    .then((results) => {
+      const labels = results[0].labelAnnotations;
+      //console.log("Labels found for " + file.name + JSON.stringify(labels));
+      const filename = file.name;
+      labels.forEach((label) => console.log(filename + ", Label: " + label.description + ", Score: " + label.score));
+    })
+    .catch((err) => {
+      console.error('ERROR:', err);
+    });
   
   callback();
 };
