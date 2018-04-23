@@ -1,4 +1,3 @@
-const Storage = require('@google-cloud/storage');
 const Vision = require('@google-cloud/vision');
 
 /**
@@ -13,7 +12,6 @@ exports.processFile = function(event, callback) {
   
   // Instantiates a Vision and Storage client
   const vision = Vision();
-  const storage = Storage();
 
   const request = {
     source: {
