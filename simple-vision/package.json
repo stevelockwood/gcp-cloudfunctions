@@ -1,7 +1,9 @@
 {
   "name": "cloud-function-vision-demo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
-    "@google-cloud/vision": "0.12.0"
+    "@google-cloud/vision": "0.24.0"
   }
 }
+
+

@@ -1,35 +1,28 @@
-const Vision = require('@google-cloud/vision');
+//NodeJS 8
+
+'use strict';
+
+const vision = require('@google-cloud/vision');
 
 /**
  * Triggered from a message on a Cloud Storage bucket.
- *
- * @param {!Object} event The Cloud Functions event.
- * @param {!Function} The callback function.
+ * Parameters changed in Nodejs 8
  */
-exports.processFile = function(event, callback) {
-  const file = event.data;
-  console.log('Processing file: ' + file.bucket + "/" + file.name);  
+exports.processFile = (data, context, callback) => {
+  const file = 'gs://' + data.bucket + '/' + data.name;
+  console.log('Processing file: ' + file);  
   
   // Instantiates a Vision and Storage client
-  const vision = Vision();
-
-  const request = {
-    source: {
-      imageUri: `gs://${file.bucket}/${file.name}`
-    }
-  };
+  const vision_client = new vision.ImageAnnotatorClient();
 
   // Performs label detection on the gcs file
-  vision.labelDetection(request)
+  return vision_client.labelDetection(file)
     .then((results) => {
       const labels = results[0].labelAnnotations;
-      //console.log("Labels found for " + file.name + JSON.stringify(labels));
-      const filename = file.name;
-      labels.forEach((label) => console.log(filename + ", Label: " + label.description + ", Score: " + label.score));
+      labels.forEach((label) => console.log(file + ", Label: " + label.description + ", Score: " + label.score));
     })
     .catch((err) => {
-      console.error('ERROR:', err);
+      console.error('ERROR processing image: ', err);
     });
   
-  callback();
-};
+  };
