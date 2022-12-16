@@ -1,4 +1,4 @@
-//NodeJS 8
+//NodeJS
 
 'use strict';
 
@@ -7,6 +7,7 @@ const vision = require('@google-cloud/vision');
 /**
  * Triggered from a message on a Cloud Storage bucket.
  * Parameters changed in Nodejs 8
+ * Still works in nodejs 10+
  */
 exports.processFile = (data, context, callback) => {
   const file = 'gs://' + data.bucket + '/' + data.name;
@@ -14,6 +15,7 @@ exports.processFile = (data, context, callback) => {
   
   // Instantiates a Vision and Storage client
   const vision_client = new vision.ImageAnnotatorClient();
+
 
   // Performs label detection on the gcs file
   return vision_client.labelDetection(file)
